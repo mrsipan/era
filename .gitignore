@@ -1,0 +1,16 @@
+# Build directory
+build/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Test artifacts
+test/test_main.cpp
+test/test_*.cpp
