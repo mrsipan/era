@@ -1,5 +1,7 @@
 # era
 
+[![Build](https://github.com/mrsipan/era/actions/workflows/build.yml/badge.svg)](https://github.com/mrsipan/era/actions/workflows/build.yml)
+
 **A modern C++23 implementation of the [age](https://github.com/FiloSottile/age) file encryption format.**
 
 `era` is a fast, static, drop-in compatible implementation of [age-encryption.org/v1](https://age-encryption.org/v1). It uses [libsodium](https://doc.libsodium.org/) for all cryptographic primitives and compiles to a single, dependency-free binary (statically linked against libsodium).
@@ -17,15 +19,56 @@
 
 ## Quick Start
 
-### Build
+### Download Pre-built Binaries
+
+Static binaries are available from [GitHub Releases](https://github.com/mrsipan/era/releases) (tagged versions) and [GitHub Actions artifacts](https://github.com/mrsipan/era/actions) (latest commit):
+
+| Platform | Arch | Binary |
+|----------|------|--------|
+| Linux | amd64 | `era-linux-amd64.tar.gz` |
+| macOS | arm64 (Apple Silicon) | `era-darwin-arm64.tar.gz` |
+| macOS | amd64 (Intel) | `era-darwin-amd64.tar.gz` |
+
+Each tarball contains a single statically-linked `era` binary with libsodium baked in — no runtime dependencies beyond the system libc.
+
+### Build from Source
+
+#### Dynamic build (development)
 
 ```bash
 # Requires: cmake >= 3.20, C++23 compiler (clang >= 17, gcc >= 14), libsodium
-brew install cmake libsodium    # macOS
+brew install cmake libsodium         # macOS
 # or: apt install cmake libsodium-dev  # Debian/Ubuntu
 
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
+```
+
+#### Static build (distribution)
+
+Links libsodium statically so the resulting binary has no external library dependencies:
+
+```bash
+# macOS: libsodium.a is included in the brew package
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DSTATIC_LINK=ON
+cmake --build build
+
+# Verify: libsodium should not appear
+# macOS:
+otool -L build/era
+# Linux:
+ldd build/era
+```
+
+On Linux, install the static library explicitly if needed:
+
+```bash
+# Debian/Ubuntu
+apt install libsodium-dev
+# The static lib is at /usr/lib/$(gcc -dumpmachine)/libsodium.a
+
+# Fedora
+# dnf install libsodium-static
 ```
 
 ### Usage
